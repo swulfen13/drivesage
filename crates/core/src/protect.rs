@@ -91,15 +91,18 @@ pub fn is_project_dir(dir: &Path) -> bool {
     MARKERS.iter().any(|m| dir.join(m).exists())
 }
 
-/// True if any ancestor of `path` (up to and excluding `stop_at`) is a project directory.
+/// True if any ancestor of `path` up to and including `stop_at` is a project directory.
 pub fn inside_project(path: &Path, stop_at: &Path) -> bool {
     let mut cur = path.parent();
     while let Some(dir) = cur {
-        if dir == stop_at || !dir.starts_with(stop_at) {
+        if !dir.starts_with(stop_at) {
             break;
         }
         if is_project_dir(dir) {
             return true;
+        }
+        if dir == stop_at {
+            break;
         }
         cur = dir.parent();
     }

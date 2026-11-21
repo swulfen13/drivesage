@@ -6,3 +6,4 @@ web/dist/
 .vscode/
 .idea/
 src-tauri/gen/
+crates/*/dstest*

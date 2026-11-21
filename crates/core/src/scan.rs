@@ -415,7 +415,7 @@ mod tests {
 
     #[test]
     fn scans_and_aggregates() {
-        let d = tempfile::Builder::new().prefix("dstest").tempdir().unwrap();
+        let d = tempfile::Builder::new().prefix("dstest").tempdir_in(env!("CARGO_MANIFEST_DIR")).unwrap();
         let root = d.path().to_path_buf();
         fs::create_dir_all(root.join("a/b")).unwrap();
         fs::write(root.join("a/b/x.pdf"), vec![1u8; 2_000_000]).unwrap();

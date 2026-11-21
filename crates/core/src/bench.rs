@@ -225,7 +225,7 @@ mod tests {
     use super::*;
     #[test]
     fn small_benchmark_runs() {
-        let dir = tempfile::Builder::new().prefix("dstest").tempdir().unwrap();
+        let dir = tempfile::Builder::new().prefix("dstest").tempdir_in(env!("CARGO_MANIFEST_DIR")).unwrap();
         let r = run(&dir.path().join("b"), 16, &|_| {}).unwrap();
         assert!(r.seq_write_mbps > 0.0 && r.seq_read_mbps > 0.0 && r.rand4k_read_iops > 0.0);
     }

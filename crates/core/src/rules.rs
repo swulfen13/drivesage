@@ -212,7 +212,7 @@ mod tests {
 
     #[test]
     fn sorts_loose_files() {
-        let d = tempfile::Builder::new().prefix("dstest").tempdir().unwrap();
+        let d = tempfile::Builder::new().prefix("dstest").tempdir_in(env!("CARGO_MANIFEST_DIR")).unwrap();
         let root = d.path().to_path_buf();
         std::fs::write(root.join("r.pdf"), b"1").unwrap();
         std::fs::write(root.join("p.png"), b"2").unwrap();

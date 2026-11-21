@@ -125,8 +125,9 @@ fn has_parent_refs(p: &Path) -> bool {
     p.components().any(|c| matches!(c, Component::ParentDir))
 }
 
-/// Check a single action. Returns a reason string if it must be skipped.
-pub fn validate(a: &Action) -> Result<(), String> {
+/// Check a single action. `root` is the folder the plan was made for.
+/// Returns a reason string if the action must be skipped.
+pub fn validate(a: &Action, root: &Path) -> Result<(), String> {
     if !a.from.is_absolute() || !a.to.is_absolute() {
         return Err("Pfad ist nicht absolut".into());
     }
@@ -147,7 +148,6 @@ pub fn validate(a: &Action) -> Result<(), String> {
     if is_protected(&a.to) {
         return Err("Ziel liegt in einem geschützten Bereich".into());
     }
-    let root = a.from.ancestors().last().unwrap_or(Path::new("/"));
     if inside_project(&a.from, root) {
         return Err("Datei gehört zu einem Code-Projekt".into());
     }
@@ -227,7 +227,7 @@ pub fn execute(plan: &Plan, dry_run: bool, data_dir: &Path) -> Result<RunReport>
     let mut steps = Vec::new();
     let (mut moved, mut skipped, mut failed, mut bytes) = (0, 0, 0, 0u64);
     for a in plan.actions.iter().filter(|a| a.enabled) {
-        if let Err(reason) = validate(a) {
+        if let Err(reason) = validate(a, &plan.target_root) {
             skipped += 1;
             steps.push(StepResult {
                 action_id: a.id,
@@ -431,7 +431,7 @@ mod tests {
 
     #[test]
     fn execute_and_undo_roundtrip() {
-        let d = tempfile::Builder::new().prefix("dstest").tempdir().unwrap();
+        let d = tempfile::Builder::new().prefix("dstest").tempdir_in(env!("CARGO_MANIFEST_DIR")).unwrap();
         let root = d.path().join("dl");
         let data = d.path().join("data");
         fs::create_dir_all(&root).unwrap();
@@ -502,11 +502,11 @@ mod tests {
             rule: String::new(),
             enabled: true,
         };
-        assert!(validate(&a).is_err());
+        assert!(validate(&a, Path::new("/")).is_err());
         let b = Action {
             from: "/tmp/../etc/x".into(),
             ..a.clone()
         };
-        assert!(validate(&b).is_err());
+        assert!(validate(&b, Path::new("/tmp")).is_err());
     }
 }
