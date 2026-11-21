@@ -1,0 +1,15 @@
+[package]
+name = "drivesage"
+description = "DriveSage desktop app — disk analyzer, drive benchmark and AI file organizer"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+drivesage-server = { path = "../crates/server" }

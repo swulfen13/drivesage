@@ -1,0 +1,17 @@
+{
+  "name": "drivesage",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Disk analyzer, drive benchmark and AI file organizer (Rust + React + Tauri)",
+  "scripts": {
+    "build:web": "npm --prefix web run build",
+    "dev:web": "npm --prefix web run dev",
+    "tauri": "tauri",
+    "app:dev": "npm run build:web && tauri dev",
+    "app:build": "tauri build",
+    "web": "npm run build:web && cargo run -p drivesage-server --bin drivesage-web"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.12.6"
+  }
+}
